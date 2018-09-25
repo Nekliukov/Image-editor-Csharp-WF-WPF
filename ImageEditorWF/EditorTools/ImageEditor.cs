@@ -7,6 +7,23 @@ namespace EditorTools
 {
     public static class ImageEditor
     {
+        #region Constants
+        public const int BRIGHTNESS_MIN = -100, BRIGHTNESS_MAX = 100,
+                          CONTRAST_MIN = -100, CONTRAST_MAX = 100;
+        public const string IMAGE_EXTENSIONS_PATTERN = "Image files (*.jpg, *.jpeg, *.jpe," +
+            " *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
+        #endregion
+
+        public static Image initialImage = null, loadedImage = null;
+        // For getting right location after image scrathing
+        public static float widthMultiplier, heightMultiplier;
+
+        //Fields for drawing
+        public static PointF lastPoint;
+        public static bool isDrawing = false, isMouseDown = false;
+        public static int brushThickness = 0;
+        public static Color brushColor = Color.Black;
+
         public static Bitmap AdjustBrightness(Bitmap Image, int threshold)
         {
             Bitmap TempBitmap = Image;

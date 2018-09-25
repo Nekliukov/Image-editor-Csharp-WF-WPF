@@ -8,27 +8,6 @@ namespace ImageEditorWF
 {
     public partial class MainForm : Form
     {
-        #region Constants
-        private const int BRIGHTNESS_MIN = -100, BRIGHTNESS_MAX = 100,
-                          CONTRAST_MIN = -100, CONTRAST_MAX = 100;
-        private const string IMAGE_EXTENSIONS_PATTERN = "Image files (*.jpg, *.jpeg, *.jpe," +
-            " *.jfif, *.png) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png";
-        #endregion
-
-        #region Private fields
-
-        private Image initialImage = null, loadedImage = null;
-        // For getting right location after image scrathing
-        private float widthMultiplier, heightMultiplier;
-
-        //Fields for drawing
-        private PointF lastPoint;
-        private bool isDrawing = false, isMouseDown = false;
-        private int brushThickness = 0;
-        private Color brushColor = Color.Black;
-
-        #endregion
-
         public MainForm() => InitializeComponent();
 
         #region Generated events
@@ -36,10 +15,10 @@ namespace ImageEditorWF
         {
             try
             {
-                openFileDialog1.Filter = IMAGE_EXTENSIONS_PATTERN;
+                openFileDialog1.Filter = ImageEditor.IMAGE_EXTENSIONS_PATTERN;
                 openFileDialog1.ShowDialog();
-                loadedImage = Image.FromFile(openFileDialog1.FileName);
-                initialImage = Image.FromFile(openFileDialog1.FileName);
+                ImageEditor.loadedImage = Image.FromFile(openFileDialog1.FileName);
+                ImageEditor.initialImage = Image.FromFile(openFileDialog1.FileName);
             }
             catch (OutOfMemoryException)
             {
@@ -52,10 +31,10 @@ namespace ImageEditorWF
                 return;
             }
 
-            pictureBox_image.Image = initialImage;
+            pictureBox_image.Image = ImageEditor.initialImage;
             pictureBox_image.SizeMode = PictureBoxSizeMode.StretchImage;
-            widthMultiplier = pictureBox_image.Width / (float)pictureBox_image.Image.Width;
-            heightMultiplier = pictureBox_image.Height / (float)pictureBox_image.Image.Height;
+            ImageEditor.widthMultiplier = pictureBox_image.Width / (float)pictureBox_image.Image.Width;
+            ImageEditor.heightMultiplier = pictureBox_image.Height / (float)pictureBox_image.Image.Height;
             tabControl.Enabled = true;
         }
 
@@ -63,7 +42,7 @@ namespace ImageEditorWF
         {
             try
             {
-                saveFileDialog1.Filter = IMAGE_EXTENSIONS_PATTERN;
+                saveFileDialog1.Filter = ImageEditor.IMAGE_EXTENSIONS_PATTERN;
                 saveFileDialog1.ShowDialog();
                 pictureBox_image.Image.Save(saveFileDialog1.FileName);
             }
@@ -81,16 +60,16 @@ namespace ImageEditorWF
         }
 
         private void trackBar_brightness_Scroll(object sender, EventArgs e)
-            => PerformChanges(initialImage);
+            => PerformChanges(ImageEditor.initialImage);
 
         private void trackBar_contrast_Scroll(object sender, EventArgs e)
-            => PerformChanges(initialImage);
+            => PerformChanges(ImageEditor.initialImage);
 
         private void MainForm_Load(object sender, EventArgs e)
         {
             tabControl.Enabled = false;
-            SetTrackPadValues(trackBar_brightness, BRIGHTNESS_MIN, BRIGHTNESS_MAX);
-            SetTrackPadValues(trackBar_contrast, CONTRAST_MIN, CONTRAST_MAX);
+            SetTrackPadValues(trackBar_brightness, ImageEditor.BRIGHTNESS_MIN, ImageEditor.BRIGHTNESS_MAX);
+            SetTrackPadValues(trackBar_contrast, ImageEditor.CONTRAST_MIN, ImageEditor.CONTRAST_MAX);
         }
 
         private void button_rotate_Click(object sender, EventArgs e)
@@ -98,10 +77,10 @@ namespace ImageEditorWF
             if (!IsImageExists())
                 return;
 
-            initialImage = ImageEditor.Rotate90(initialImage);
-            pictureBox_image.Image = initialImage;
+            ImageEditor.initialImage = ImageEditor.Rotate90(ImageEditor.initialImage);
+            pictureBox_image.Image = ImageEditor.initialImage;
             pictureBox_image.SizeMode = PictureBoxSizeMode.StretchImage;
-            PerformChanges(initialImage);
+            PerformChanges(ImageEditor.initialImage);
         }
 
         private void checkBox_drawing_CheckedChanged(object sender, EventArgs e)
@@ -109,62 +88,61 @@ namespace ImageEditorWF
             if (checkBox_drawing.Checked == true)
             {
                 pictureBox_image.Cursor = Cursors.Cross;
-                isDrawing = true;
+                ImageEditor.isDrawing = true;
             }
             else
             {
                 pictureBox_image.Cursor = Cursors.Default;
-                isDrawing = false;
+                ImageEditor.isDrawing = false;
             }
         }
 
         private void pictureBox_image_MouseMove(object sender, MouseEventArgs e)
         {
-            if (isMouseDown && isDrawing)
+            if (ImageEditor.isMouseDown && ImageEditor.isDrawing)
             {
                 using (Graphics g = Graphics.FromImage(pictureBox_image.Image))
                 {
                     PointF currLocation = e.Location;
-                    currLocation.X /= widthMultiplier;
-                    currLocation.Y /= heightMultiplier;
-                    g.DrawLine(new Pen(brushColor, brushThickness), lastPoint, currLocation);
+                    currLocation.X /= ImageEditor.widthMultiplier;
+                    currLocation.Y /= ImageEditor.heightMultiplier;
+                    g.DrawLine(new Pen(ImageEditor.brushColor, ImageEditor.brushThickness), ImageEditor.lastPoint, currLocation);
                     g.SmoothingMode = SmoothingMode.AntiAlias;
                 }
 
                 pictureBox_image.Invalidate();
-                lastPoint = new PointF(e.Location.X / widthMultiplier, e.Location.Y / heightMultiplier);
-                initialImage = pictureBox_image.Image;
+                ImageEditor.lastPoint = new PointF(e.Location.X / ImageEditor.widthMultiplier, e.Location.Y / ImageEditor.heightMultiplier);
+                ImageEditor.initialImage = pictureBox_image.Image;
             }
         }
 
         private void trackBar_thickness_Scroll(object sender, EventArgs e)
-            => brushThickness = trackBar_thickness.Value;
+            => ImageEditor.brushThickness = trackBar_thickness.Value;
 
         private void button_setColor_Click(object sender, EventArgs e)
         {
             colorDialog1.ShowDialog();
-            brushColor = colorDialog1.Color;
-            label_color.BackColor = brushColor;
+            ImageEditor.brushColor = colorDialog1.Color;
+            label_color.BackColor = ImageEditor.brushColor;
         }
 
         private void pictureBox_image_MouseUp(object sender, MouseEventArgs e)
         {
-            isMouseDown = false;
-            lastPoint.X = 0; lastPoint.Y = 0;
-            PerformChanges(initialImage);
+            ImageEditor.isMouseDown = false;
+            ImageEditor.lastPoint.X = 0; ImageEditor.lastPoint.Y = 0;
         }
 
         private void pictureBox_image_MouseDown(object sender, MouseEventArgs e)
         {
-            lastPoint = e.Location;
-            lastPoint.X /= widthMultiplier;
-            lastPoint.Y /= heightMultiplier;
-            isMouseDown = true;
+            ImageEditor.lastPoint = e.Location;
+            ImageEditor.lastPoint.X /= ImageEditor.widthMultiplier;
+            ImageEditor.lastPoint.Y /= ImageEditor.heightMultiplier;
+            ImageEditor.isMouseDown = true;
         }
 
         private void button_reset_Click(object sender, EventArgs e)
         {
-            pictureBox_image.Image = loadedImage;
+            pictureBox_image.Image = ImageEditor.loadedImage;
             trackBar_brightness.Value = 0;
             trackBar_contrast.Value = 0;
         }
