@@ -1,0 +1,41 @@
+﻿<Window x:Class="ImageEditorWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageEditorWPF"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="430.5" Width="837">
+    <Grid Height="388" VerticalAlignment="Top" Margin="0,0,0,-8">
+        <Image Name="MainImage" HorizontalAlignment="Left" Height="368" Margin="30,26,0,0" VerticalAlignment="Top" Width="520" OpacityMask="#FF9E9E9E"/>
+        <Button x:Name="ButtonLoad" Content="Load image" HorizontalAlignment="Left" VerticalAlignment="Top" Width="106" Margin="568,293,0,0" AutomationProperties.Name="button_load" Click="ButtonLoad_Click" Height="45"/>
+        <Button x:Name="ButtonSave" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Width="104" Margin="696,293,0,0" AutomationProperties.Name="button_save" Click="ButtonSave_Click" Height="45"/>
+        <TabControl Name="GroupBoxOptions" HorizontalAlignment="Left" Height="246" Margin="568,26,0,0" VerticalAlignment="Top" Width="232">
+            <TabItem Header="Settings" Margin="0,0,-4,-2">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="175*"/>
+                        <ColumnDefinition Width="86*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Brightness" HorizontalAlignment="Left" Margin="16,10,0,0" VerticalAlignment="Top"/>
+                    <Slider x:Name="BrightnessSlider" HorizontalAlignment="Left" Margin="16,34,0,0" VerticalAlignment="Top" Width="155" Minimum="-100" Maximum="100" Cursor="Hand" ValueChanged="Slider_ValueChanged"/>
+                    <Label Content="Contrast" HorizontalAlignment="Left" Margin="16,57,0,0" VerticalAlignment="Top"/>
+                    <Slider x:Name="ContrastSlider" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="53.917,6.667" Height="26" Width="156" Margin="16,83,0,0" Maximum="100" Minimum="-100" AutomationProperties.Name="ContrastSlider" ValueChanged="Slider_ValueChanged_1"/>
+                    <Button x:Name="RotateButton"  Content="Rotate" HorizontalAlignment="Left" Margin="16,125,0,0" VerticalAlignment="Top" Width="114" Click="RotateButton_Click"/>
+                    <Button x:Name="ReturnButton"  Content="Return original" HorizontalAlignment="Left" Margin="16,160,0,0" VerticalAlignment="Top" Width="114" Click="ReturnButton_Click"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Effects" Margin="8,0,-32,-2" RenderTransformOrigin="0.448,0.227">
+                <Grid Background="#FFE5E5E5" Margin="0,0,-7,-4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="9*"/>
+                        <ColumnDefinition Width="14*"/>
+                        <ColumnDefinition Width="210*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Name="GrayScaleButton" Content="GrayScale" Grid.Column="2" HorizontalAlignment="Left" Margin="10,21,0,0" VerticalAlignment="Top" Width="176" Click="GrayScaleButton_Click"/>
+                    <Button x:Name="BlurButton" Content="Blur" Grid.Column="2" HorizontalAlignment="Left" Margin="10,56,0,0" VerticalAlignment="Top" Width="176" Click="BlurButton_Click"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>
